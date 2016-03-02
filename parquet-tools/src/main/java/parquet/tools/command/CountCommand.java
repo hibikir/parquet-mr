@@ -15,23 +15,22 @@
  */
 package parquet.tools.command;
 
-import java.io.PrintWriter;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.Path;
-
 import parquet.hadoop.ParquetReader;
 import parquet.tools.Main;
 import parquet.tools.read.SimpleReadSupport;
 import parquet.tools.read.SimpleRecord;
 
-public class CatCommand extends ArgsOnlyCommand {
+import java.io.PrintWriter;
+
+public class CountCommand extends ArgsOnlyCommand {
   public static final String[] USAGE = new String[] {
     "<input>",
     "where <input> is the parquet file to print to stdout"
   };
 
-  public CatCommand() {
+  public CountCommand() {
     super(1, 100);
   }
 
@@ -45,19 +44,23 @@ public class CatCommand extends ArgsOnlyCommand {
     super.execute(options);
 
     String[] args = options.getArgs();
+    int count = 0;
+    PrintWriter writer = new PrintWriter(Main.out, true);
     for (String arg : args) {
-      doTheThing(arg);
+      int thisCount = doTheThing(arg);
+      writer.println(arg +" "+thisCount);
+      count += thisCount;
     }
+    writer.println(""+count);
   }
 
-  public void doTheThing(String input) throws Exception {
+  public int doTheThing(String input) throws Exception {
+    int count = 0;
     ParquetReader<SimpleRecord> reader = null;
     try {
-      PrintWriter writer = new PrintWriter(Main.out, true);
       reader = new ParquetReader<SimpleRecord>(new Path(input), new SimpleReadSupport());
       for (SimpleRecord value = reader.read(); value != null; value = reader.read()) {
-        value.prettyPrint(writer);
-        writer.println();
+         count++;
       }
     } finally {
       if (reader != null) {
@@ -67,6 +70,7 @@ public class CatCommand extends ArgsOnlyCommand {
         }
       }
     }
+    return count;
   }
 
 }

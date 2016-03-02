@@ -28,6 +28,7 @@ public final class Registry {
     registry.put("schema", ShowSchemaCommand.class);
     registry.put("meta", ShowMetaCommand.class);
     registry.put("dump", DumpCommand.class);
+    registry.put("count",CountCommand.class);
   }
 
   public static Map<String,Command> allCommands() {

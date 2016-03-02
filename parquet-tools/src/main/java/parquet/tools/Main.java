@@ -195,7 +195,7 @@ public class Main {
       die("Unknown command: " + name, true, null, null);
     }
 
-    boolean debug = false;
+    boolean debug = true;
     Options options = mergeOptions(OPTIONS, command.getOptions());
     try {
       String[] cargs = Arrays.copyOfRange(args, 1, args.length);
@@ -214,7 +214,6 @@ public class Main {
         System.setProperty("DISABLE_COLORS", "true");
       }
 
-      debug = cmd.hasOption("debug");
 
       command.execute(cmd);
     } catch (ParseException ex) {
